@@ -1,70 +1,25 @@
-// // Initialize an empty expression
-// let expressionField = document.getElementById('expression');
-// let resultField = document.getElementById('result');
-
-// // Append to the expression
-// function appendExpression(value) {
-//     expressionField.value += value;
-// }
-
-// // Reset the calculator
-// function resetCalculator() {
-//     expressionField.value = '';
-//     resultField.textContent = '';
-// }
-
-// // Perform the calculation
-// function calculate() {
-//     try {
-//         // Extend Math functionalities
-//         const extendedMath = {
-//             sin: Math.sin,
-//             cos: Math.cos,
-//             tan: Math.tan,
-//             sqrt: Math.sqrt,
-//             log: Math.log,
-//             pi: Math.PI,
-//             e: Math.E,
-//             "^": (base, exp) => Math.pow(base, exp),
-//         };
-
-//         // Securely evaluate the expression
-//         const safeEval = new Function('Math', `return (${expressionField.value});`);
-//         const result = safeEval(extendedMath);
-//         resultField.textContent = `Result: ${result}`;
-//     } catch (error) {
-//         resultField.textContent = 'Error: Invalid Expression';
-//     }
-// }
-
 
 const expressionInput = document.getElementById('expression');
 const resultDiv = document.getElementById('result');
+const historyPanel = document.getElementById('history-panel');
+const historyList = document.getElementById('history-list');
 
-/*
-|--------------------------------------------------------------------------
-| Append characters / functions to expression
-|--------------------------------------------------------------------------
-*/
+let history = [];
+
+
 function appendExpression(value) {
     expressionInput.value += value;
 }
 
-/*
-|--------------------------------------------------------------------------
-| Reset calculator
-|--------------------------------------------------------------------------
-*/
+function toggleHistory() {
+    historyPanel.classList.toggle('hidden');
+}
+
 function resetCalculator() {
     expressionInput.value = '';
     resultDiv.textContent = '';
 }
 
-/*
-|--------------------------------------------------------------------------
-| Calculate expression (server-side)
-|--------------------------------------------------------------------------
-*/
 function calculate() {
     const expression = expressionInput.value.trim();
 
@@ -89,12 +44,49 @@ function calculate() {
                 resultDiv.textContent = 'Error evaluating expression';
                 return;
             }
-            resultDiv.textContent = 'Result: ' + result;
+resultDiv.textContent = 'Result: ' + result;
+addToHistory(expression, result);
         })
         .catch(() => {
             resultDiv.textContent = 'Server error';
         });
 }
+
+
+function addToHistory(expression, result) {
+    const item = {
+        expression,
+        result
+    };
+
+    history.unshift(item);
+
+    // limit history size
+    if (history.length > 10) {
+        history.pop();
+    }
+
+    renderHistory();
+}
+function renderHistory() {
+    historyList.innerHTML = '';
+
+    history.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.expression} = ${entry.result}`;
+
+        li.onclick = () => {
+            expressionInput.value = entry.expression;
+            resultDiv.textContent = 'Result: ' + entry.result;
+        };
+
+        historyList.appendChild(li);
+    });
+}
+
+
+
+
 
 /*
 |--------------------------------------------------------------------------

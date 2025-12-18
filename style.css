@@ -84,3 +84,39 @@ button:hover {
 .btn-function:hover {
     background-color: #555;
 }
+
+.history {
+    margin-top: 15px;
+    padding: 10px;
+    background: #111;
+    color: #fff;
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.history h3 {
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.history ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.history li {
+    padding: 6px;
+    cursor: pointer;
+    border-bottom: 1px solid #333;
+    font-size: 13px;
+}
+
+.history li:hover {
+    background: #222;
+}
+
+.hidden {
+    display: none;
+}

@@ -17,7 +17,8 @@
             <button class="btn-function" onclick="appendExpression(')')">)</button>
             <button class="btn-function" onclick="appendExpression('%')">%</button>
             <button class="btn-operation" onclick="resetCalculator()">AC</button>
-            
+            <button class="btn-operation" onclick="toggleHistory()">History</button>
+
             <button class="btn-number" onclick="appendExpression('7')">7</button>
             <button class="btn-number" onclick="appendExpression('8')">8</button>
             <button class="btn-number" onclick="appendExpression('9')">9</button>
@@ -49,6 +50,12 @@
             <button class="btn-function" onclick="appendExpression('e')">e</button>
         </div>
     </div>
+
+    <div id="history-panel" class="history hidden">
+    <h3>History</h3>
+    <ul id="history-list"></ul>
+</div>
+
     <script src="script.js"></script>
 </body>
 </html>
