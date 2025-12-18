@@ -1,4 +1,3 @@
-<!-- calculate.php -->
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -13,34 +12,27 @@ if (!isset($_POST['expression'])) {
 
 $expression = $_POST['expression'];
 
-/*
-|--------------------------------------------------------------------------
-| Normalize expression
-|--------------------------------------------------------------------------
-*/
 
-// Constants
 $expression = str_replace(
     ['π', 'e'],
     [M_PI, M_E],
     $expression
 );
 
-// Power operator
+
 $expression = str_replace('^', '**', $expression);
 
-// Whitelist characters & functions
-$allowedPattern = '/^[0-9+\-*/().,%\s**M_PIEMacosintanlogqrt]+$/';
+$expression = preg_replace_callback(
+    '/\b(sin|cos|tan)\(([^()]*)\)/i',
+    fn($m) => "{$m[1]}(({$m[2]})*pi()/180)",
+    $expression
+);
 
-if (!preg_match($allowedPattern, $expression)) {
+
+if (!preg_match('/^[0-9+\-\*\/().,\s%piEMacosintanlogqrt]+$/i', $expression)) {
     exit('Invalid characters in expression');
 }
 
-/*
-|--------------------------------------------------------------------------
-| Safe evaluation
-|--------------------------------------------------------------------------
-*/
 function safeEval($expr) {
     try {
         ob_start();

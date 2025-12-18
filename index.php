@@ -1,7 +1,3 @@
-<?php
-echo "<h1>DEBUG: New index.php loaded!</h1>";
-exit;
-?>
 
 <!DOCTYPE html>
 <html>
