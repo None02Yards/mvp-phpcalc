@@ -51,10 +51,26 @@
         </div>
     </div>
 
-    <div id="history-panel" class="history hidden">
+     <div id="history-panel" class="history hidden">
     <h3>History</h3>
+
+    <button class="history-clear-btn" onclick="clearHistory()">
+        Clear History
+    </button>
+
     <ul id="history-list"></ul>
 </div>
+
+<div id="confirm-overlay" class="confirm-overlay hidden">
+    <div class="confirm-box">
+        <p>Clear all history?</p>
+        <div class="confirm-actions">
+            <button class="confirm-cancel" onclick="closeConfirm()">Cancel</button>
+            <button class="confirm-ok" onclick="confirmClearHistory()">Clear</button>
+        </div>
+    </div>
+</div>
+
 
     <script src="script.js"></script>
 </body>

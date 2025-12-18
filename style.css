@@ -120,3 +120,81 @@ button:hover {
 .hidden {
     display: none;
 }
+.history-clear-btn {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 6px 8px;
+    font-size: 12px;
+    border: none;
+    border-radius: 4px;
+    background: #c0392b;
+    color: #fff;
+    cursor: pointer;
+}
+
+.history-clear-btn:hover {
+    background: #e74c3c;
+}
+
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.confirm-box {
+    background: #1b1b1b;
+    color: #fff;
+    padding: 20px;
+    width: 260px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.confirm-box p {
+    margin: 0 0 15px;
+    font-size: 14px;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.confirm-actions button {
+    flex: 1;
+    padding: 6px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.confirm-cancel {
+    background: #555;
+    color: #fff;
+}
+
+.confirm-cancel:hover {
+    background: #666;
+}
+
+.confirm-ok {
+    background: #c0392b;
+    color: #fff;
+}
+
+.confirm-ok:hover {
+    background: #e74c3c;
+}
+
+.hidden {
+    display: none;
+}
