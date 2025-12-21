@@ -27,10 +27,28 @@ function errorResponse(string $message, int $httpCode = 400, array $extra = []):
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     errorResponse('Invalid request method', 405);
 }
+// ---- unified input handling (FormData | JSON | urlencoded) ----
+$input = $_POST;
 
-if (!isset($_POST['expression']) || trim($_POST['expression']) === '') {
-    errorResponse('No expression received', 400);
+if (empty($input)) {
+    $raw = file_get_contents('php://input');
+    if ($raw !== '') {
+        $json = json_decode($raw, true);
+        if (is_array($json)) {
+            $input = $json;
+        }
+    }
 }
+
+$rawExpr = trim((string)($input['expression'] ?? ''));
+
+if ($rawExpr === '') {
+    errorResponse('No expression received', 400, [
+        'post' => $_POST,
+        'input_hex' => bin2hex(file_get_contents('php://input'))
+    ]);
+}
+
 
 $rawExpr = (string) $_POST['expression'];
 
@@ -44,29 +62,40 @@ $angleUnit = isset($_POST['angle']) && strtolower($_POST['angle']) === 'rad' ? '
 $precision = isset($_POST['precision']) ? intval($_POST['precision']) : null;
 $format = isset($_POST['format']) && strtolower($_POST['format']) === 'plain' ? 'plain' : 'json';
 
-// Replace common unicode constants with ascii names for tokenization
 $expr = str_replace(['π', 'PI', 'Pi'], ['pi', 'pi', 'pi'], $rawExpr);
 $expr = str_replace('e', 'e', $expr); // leave 'e' as identifier (will be interpreted as constant)
 
 // Tokenization
 function tokenize(string $s): array {
     $s = trim($s);
-    // Remove spaces (but allow them between tokens)
-    // We'll match numbers, identifiers, operators, parentheses, comma
-    $pattern = '/
-        (\d+(\.\d+)?|\.\d+)       # number, including .5 or 3.14
-        |([A-Za-z_][A-Za-z0-9_]*) # identifier (functions/constants)
-        |([\+\-\*\/\^\%\(\),])    # operators and parentheses and comma
-    /x';
+    if ($s === '') return [];
 
-    preg_match_all($pattern, $s, $matches, PREG_SET_ORDER);
+    $pattern = '/\G\s*(
+        \d+(?:\.\d+)?|\.\d+        # number
+        |[A-Za-z_][A-Za-z0-9_]*    # identifier
+        |[\+\-\*\/\^\%\(\),]       # operators
+    )/x';
+
     $tokens = [];
-    $pos = 0;
-    foreach ($matches as $m) {
-        $tokens[] = $m[0];
+    $offset = 0;
+    $len = strlen($s);
+
+    while ($offset < $len) {
+        if (!preg_match($pattern, $s, $m, 0, $offset)) {
+            throw new RuntimeException(
+                'Invalid character at offset ' . $offset .
+                ' (hex: ' . bin2hex($s[$offset]) . ')'
+            );
+        }
+        $tokens[] = $m[1];
+        $offset += strlen($m[0]);
     }
+
     return $tokens;
 }
+
+
+
 
 // Operator metadata
 $ops = [
